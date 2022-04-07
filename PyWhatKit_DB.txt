@@ -913,3 +913,18 @@ Time: 6:1
 Group ID: FTDFIE7D1P14BcNXz033we
 Message: Me despido de turno 1
 --------------------
+Date: 7/4/2022
+Time: 5:50
+Group ID: FTDFIE7D1P14BcNXz033we
+Message: Dr. Merma 👨‍⚕ recomienda revisar: - BELL-S QUESO MOZARELLA PQ180GR- KARINTO CHIFLES SALADO 38GPara hoy 2022-04-07
+--------------------
+Date: 7/4/2022
+Time: 6:0
+Group ID: FTDFIE7D1P14BcNXz033we
+Message: Hasta hoy he alertado 58 vencimientos y Sr. Merma mapeado 346 productos.
+--------------------
+Date: 7/4/2022
+Time: 6:1
+Group ID: FTDFIE7D1P14BcNXz033we
+Message: Turno 1 Responda este mensaje confirmando la informacion recibida, por favor.
+--------------------
