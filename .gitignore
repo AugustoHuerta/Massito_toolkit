@@ -1,5 +1,5 @@
 /venv
 creds.json
-"".xlsx
+*.xlsx
 last_output_dr_Merma.txt
 PyWhatKit_DB.txt
