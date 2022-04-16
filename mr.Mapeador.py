@@ -8,6 +8,7 @@ import sys
 from unicodedata import name
 import json
 from all_list import all_list
+from insert_product_database_a import inserts_product_database
 
 First_list = ("ENFRIADOS", "YOGURT", "CONGELADOS", "LECHES",
             "PIQUEOS Y SECOS", "PANES/PANETONES/KEKES", "CONDIMIENTOS/ADERESOS",
@@ -117,34 +118,6 @@ def gets_product(proct_wanted): #O(n)
                     break
         return list_products_maped
 
-def inserts_product_database(list_products_maped):
-    import gspread
-    from oauth2client.service_account import ServiceAccountCredentials
-        
-    scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-
-    creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
-
-    client = gspread.authorize(creds)
-
-    spread_sheet = client.open("Massito") # Open the spreadhseet
-
-    sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
-
-    sheet2 = spread_sheet.worksheet('Python variables')
-
-    sheet3 = spread_sheet.worksheet('DataJst')
-
-    # Inserts the product in the database
-    for index in tuple(range(0,len(list_products_maped))): #O(n)
-        product_to_be_inserted = list_products_maped[index]
-        sheet1.insert_row(product_to_be_inserted,3)  # Insert the list as a row at index 2
-        cell = 'B3'
-        contador = (int((sheet2.cell(3,2).value))) + 1
-        sheet2.update(cell,contador)
-    
-    print("Hecho")
-
 def run():
     # STEP 1: What product you wanna add?
     print("Listado de tipos de productos")
@@ -162,12 +135,9 @@ def run():
         selected_list = all_list[list_printer(kind_of_proct_wanted)-1]
         number_of_proct_wanted = int(input(""""Escribe el numero del producto deseado: """))
         # Searchs the product wanted by the number selected
-        for number_in_list in tuple(range(1,len(selected_list)+1)): #O(n"2)
-        # This can be optimizaded with numerical methods
-            if number_in_list == number_of_proct_wanted:
-                proct_wanted = selected_list[(number_in_list-1)]
+        proct_wanted = selected_list[(number_of_proct_wanted-1)]
         print("Producto selected: " + proct_wanted[6])
-        list_products_maped.append(gets_product(proct_wanted)) #O(n"2)
+        list_products_maped.append(gets_product(proct_wanted))
         print(list_products_maped)
         wanna_continue = input("¿Quieres añadir otro producto de la misma lista? (Y/N)")
     inserts_product_database(list_products_maped)
