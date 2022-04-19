@@ -27,6 +27,7 @@ sheet3 = spread_sheet.worksheet('DataJst')
 
 currenthour = int(time.strftime("%H"))
 currentminute = int(time.strftime("%M"))
+todays_number = int("".join(list(time.strftime("%D"))[3:5]))
 
 def enlist_products_not_alerted():
     list_of_products_not_alerted = sheet2.col_values(4)
@@ -50,9 +51,13 @@ def dr_merma(list_exp_products, hour, minute):
     print(products)
     number_products_alerted = sheet2.cell(2,2).value
     number_products_maped = sheet2.cell(3,2).value
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',"""Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products + '\nPara hoy ' + str((date.today())), hour, minute,18)
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.'), hour, minute+1,18)
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f"Turno 1 Responda este mensaje confirmando la informacion recibida, por favor."), hour, minute+2,18) 
+    ms1 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products + '\nPara hoy ' + str((date.today()))
+    ms2 = (f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.')
+    ms3 = (f"Turno 1 Responda este mensaje confirmando la informacion recibida, por favor.")
+    print(ms1)
+    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms3, hour, minute,18)
+    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms1, hour, minute+1,18)
+    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms2, hour, minute+2,18) 
     # pywhatkit.sendwhatmsg("+51918234518", "Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: " + products + ', para hoy ' + str((date.today())), hour, minute,15)
 
 def run(hour,minute):
@@ -71,4 +76,5 @@ def run(hour,minute):
 if __name__ == '__main__':
     run(6,0)
     # run(currenthour,currentminute+1)
-    #pywhatkit.sendwhatmsg("+51935924465", "Hola Luz. Opcion de volver lista. Debido al cansancio, el listado de stock está listo a las 10 a.m. Gracias", 6, 20,18)
+    if todays_number == 28:
+        pywhatkit.sendwhatmsg("+51935924465", "Hola Luz. Soy Dr.Merma. Te recomiendo iniciar el proceso de mapeo de fechas para el siguiente mes, ya que estamos 28", 6, 20,18)
