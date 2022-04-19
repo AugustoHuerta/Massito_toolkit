@@ -1,0 +1,7 @@
+Log 18/04:
+- Falta hacer bien los macros de valor unitario on hand, multiplicación y unidades on hand.
+- Falta el tema de poner el data set actual en el massito excel.
+- No se ha solucionado el error de mr.mapeador.
+	- Se tiene la idea de usar programación orientada a objetos para lograrlo pero lo he estado procrastinando por lo díficil que puede resultar.
+	- Explorar opciones con javascript o un excel aparte solo para eso sería interesante y mucho mejor para el usuario a corto plazo.
+		- Creo que esto sería lo más adecuado, así nos adaptamos a nuevos productos al instante.
