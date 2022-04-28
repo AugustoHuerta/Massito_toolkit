@@ -63,7 +63,7 @@ def dr_merma(list_exp_products, hour, minute):
 def run(hour,minute):
     list_exp_products = enlist_products_not_alerted()
     if list_exp_products != []:
-        dr_merma(list_exp_products,hour,minute)
+        #dr_merma(list_exp_products,hour,minute)
         change_alerted_value_of_product()
     else:
         number_products_alerted = sheet2.cell(2,2).value
