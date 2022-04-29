@@ -77,4 +77,8 @@ if __name__ == '__main__':
     run(6,0)
     # run(currenthour,currentminute+1)
     if todays_number == 28:
-        pywhatkit.sendwhatmsg("+51935924465", "Hola Luz. Soy Dr.Merma. Te recomiendo iniciar el proceso de mapeo de fechas para el siguiente mes, ya que estamos 28", 6, 20,18)
+        pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Te recomiendo iniciar el proceso de mapeo de fechas para el siguiente mes, ya que estamos 28.
+        Pero, una cosa más: Augusto YA LO SOLUCIONO HOY A LAS 3 AM, estoy llorando de ansiedad y alegria por resolverlo y la hora a la que me acuesto.
+        Dame hasta el 29 para mostrartelo, te pido como último favor. Tiene una interfax profesional y sencilla.
+        Además de que ahora es una APP. Ahora cualquiera con la app puede hacer los vencimientos.
+        El sueño de que ahora cualquiera tenga un pocket en su celular se hizo realidad :D""", 6, 20,18)

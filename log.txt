@@ -1,7 +1,3 @@
-Log 18/04:
-- Falta hacer bien los macros de valor unitario on hand, multiplicación y unidades on hand.
-- Falta el tema de poner el data set actual en el massito excel.
-- No se ha solucionado el error de mr.mapeador.
-	- Se tiene la idea de usar programación orientada a objetos para lograrlo pero lo he estado procrastinando por lo díficil que puede resultar.
-	- Explorar opciones con javascript o un excel aparte solo para eso sería interesante y mucho mejor para el usuario a corto plazo.
-		- Creo que esto sería lo más adecuado, así nos adaptamos a nuevos productos al instante.
+Log 29/04:
+- Se creó una app no-code con la herramienta de google "appsheets". Esta soluciona DE UNA todos los problemas o retos tenía que pasar mi desarrollo para que mi solución tuviera botón de volver.
+- Además, al ser una app, cualquiera puede descargarlo en su teléfono y hacer sus vencimientos de manera asíncrona, ya Luz no tiene que hacerlos uno por uno y sus colegas ahora pueden hacerlo por su propia cuenta
