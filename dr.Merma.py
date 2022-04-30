@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unicodedata import name
 import json
 import gspread
@@ -17,7 +18,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 
 client = gspread.authorize(creds)
 
-spread_sheet = client.open("Massito") # Open the spreadhseet
+spread_sheet = client.open("Mr.Mapeador database") # Open the spreadhseet
 
 sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
 
@@ -39,7 +40,7 @@ def change_alerted_value_of_product():
     list_of_index_products_alerted = sheet2.col_values(8)
     list_of_index_products_alerted.pop(0)
     for row_number in list_of_index_products_alerted:
-        cell = f'O{row_number}'
+        cell = f"P{row_number}"
         sheet1.update(cell,"YES")
         contador = (int((sheet2.cell(2,2).value))) + 1
         cell = 'B2'
@@ -58,7 +59,6 @@ def dr_merma(list_exp_products, hour, minute):
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms3, hour, minute,18)
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms1, hour, minute+1,18)
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms2, hour, minute+2,18) 
-    # pywhatkit.sendwhatmsg("+51918234518", "Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: " + products + ', para hoy ' + str((date.today())), hour, minute,15)
 
 def run(hour,minute):
     list_exp_products = enlist_products_not_alerted()
@@ -68,17 +68,15 @@ def run(hour,minute):
     else:
         number_products_alerted = sheet2.cell(2,2).value
         number_products_maped = sheet2.cell(3,2).value
-        print('Not bad products founded')
+        print('Not bad products founded ' + str((date.today())))
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',"Dr. Merma no ha encontrado malos vencimientos para hoy " + str((date.today())), hour, minute,18)
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.'), hour, minute+1,18)
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Me despido de turno 1'), hour, minute+2,18)
 
 if __name__ == '__main__':
     run(6,0)
+    print("""
+----------------------------------------------------------""")
     # run(currenthour,currentminute+1)
     if todays_number == 28:
-        pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Te recomiendo iniciar el proceso de mapeo de fechas para el siguiente mes, ya que estamos 28.
-        Pero, una cosa más: Augusto YA LO SOLUCIONO HOY A LAS 3 AM, estoy llorando de ansiedad y alegria por resolverlo y la hora a la que me acuesto.
-        Dame hasta el 29 para mostrartelo, te pido como último favor. Tiene una interfax profesional y sencilla.
-        Además de que ahora es una APP. Ahora cualquiera con la app puede hacer los vencimientos.
-        El sueño de que ahora cualquiera tenga un pocket en su celular se hizo realidad :D""", 6, 20,18)
+        pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos.""", 6, 20,18)
