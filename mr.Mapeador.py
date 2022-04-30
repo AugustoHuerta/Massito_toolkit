@@ -8,7 +8,6 @@ import sys
 from unicodedata import name
 import json
 from all_list import all_list
-from insert_product_database_a import inserts_product_database
 
 First_list = ("ENFRIADOS", "YOGURT", "CONGELADOS", "LECHES",
             "PIQUEOS Y SECOS", "PANES/PANETONES/KEKES", "CONDIMIENTOS/ADERESOS",
@@ -49,7 +48,7 @@ def storer_prod_chars(proct_wanted,quantity_expiration_date):
 def gets_product(proct_wanted): #O(n)
         list_products_maped = []
         # STEP 2: How many times you wanna add the product
-        number_entrys_requested = str(input("PASO 2: Tipea cuantas veces vas añadirlo (Ejemplo: 3): "))
+        number_entrys_requested = str(input("PASO 2: Tipea cuantas veces vas anadirlo (Ejemplo: 3): "))
         if number_entrys_requested == 'vol1':
             os.execl(sys.executable, sys.executable, *sys.argv)
         else:
@@ -139,8 +138,8 @@ def run():
         print("Producto selected: " + proct_wanted[6])
         list_products_maped.append(gets_product(proct_wanted))
         print(list_products_maped)
-        wanna_continue = input("¿Quieres añadir otro producto de la misma lista? (Y/N)")
-    inserts_product_database(list_products_maped)
+        wanna_continue = input("¿Quieres anadir otro producto de la misma lista? (Y/N)")
+    #inserts_product_database(list_products_maped)
 
 if __name__ == '__main__':
     run()
