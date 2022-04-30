@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from unicodedata import name
 import json
 import gspread
@@ -17,7 +18,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 
 client = gspread.authorize(creds)
 
-spread_sheet = client.open("Massito") # Open the spreadhseet
+spread_sheet = client.open("Mr.Mapeador database") # Open the spreadhseet
 
 sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
 
@@ -39,7 +40,7 @@ def change_alerted_value_of_product():
     list_of_index_products_alerted = sheet2.col_values(8)
     list_of_index_products_alerted.pop(0)
     for row_number in list_of_index_products_alerted:
-        cell = f'O{row_number}'
+        cell = f"O{row_number}"
         sheet1.update(cell,"YES")
         contador = (int((sheet2.cell(2,2).value))) + 1
         cell = 'B2'
@@ -58,7 +59,6 @@ def dr_merma(list_exp_products, hour, minute):
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms3, hour, minute,18)
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms1, hour, minute+1,18)
     pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms2, hour, minute+2,18) 
-    # pywhatkit.sendwhatmsg("+51918234518", "Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: " + products + ', para hoy ' + str((date.today())), hour, minute,15)
 
 def run(hour,minute):
     list_exp_products = enlist_products_not_alerted()
@@ -77,4 +77,4 @@ if __name__ == '__main__':
     run(6,0)
     # run(currenthour,currentminute+1)
     if todays_number == 28:
-        pywhatkit.sendwhatmsg("+51935924465", "Hola Luz. Soy Dr.Merma. Te recomiendo iniciar el proceso de mapeo de fechas para el siguiente mes, ya que estamos 28", 6, 20,18)
+        pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos.""", 6, 20,18)
