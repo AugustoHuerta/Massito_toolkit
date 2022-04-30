@@ -40,7 +40,7 @@ def change_alerted_value_of_product():
     list_of_index_products_alerted = sheet2.col_values(8)
     list_of_index_products_alerted.pop(0)
     for row_number in list_of_index_products_alerted:
-        cell = f"O{row_number}"
+        cell = f"P{row_number}"
         sheet1.update(cell,"YES")
         contador = (int((sheet2.cell(2,2).value))) + 1
         cell = 'B2'
@@ -68,13 +68,15 @@ def run(hour,minute):
     else:
         number_products_alerted = sheet2.cell(2,2).value
         number_products_maped = sheet2.cell(3,2).value
-        print('Not bad products founded')
+        print('Not bad products founded ' + str((date.today())))
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',"Dr. Merma no ha encontrado malos vencimientos para hoy " + str((date.today())), hour, minute,18)
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.'), hour, minute+1,18)
         pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Me despido de turno 1'), hour, minute+2,18)
 
 if __name__ == '__main__':
     run(6,0)
+    print("""
+----------------------------------------------------------""")
     # run(currenthour,currentminute+1)
     if todays_number == 28:
         pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos.""", 6, 20,18)
