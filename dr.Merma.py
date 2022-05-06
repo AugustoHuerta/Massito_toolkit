@@ -39,8 +39,8 @@ def enlist_products_to_alert():
     """
     minimarkets_of_products_not_alerted = (sheet2.col_values(3)) # Getting all "Tienda" numbers of all products.
     names_of_products_not_alerted = (sheet2.col_values(4)) # Getting all names of all products.
-    daysleft_of_products_not_alerted = (sheet2.col_values(7)) # Getting all "days left"s value of all products.
-    rownumber_of_products_not_alerted = (sheet2.col_values(8)) # Getting all row numbers of all products.
+    daysleft_of_products_not_alerted = (sheet2.col_values(5)) # Getting all "days left"s value of all products.
+    rownumber_of_products_not_alerted = (sheet2.col_values(6)) # Getting all row numbers of all products.
     list_of_products_not_alerted = [
                                     [
                                         minimarkets_of_products_not_alerted[i], # Getting "Tienda" number of each product
@@ -91,8 +91,8 @@ def run_dr_merma(list_of_products_alerted):
             ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma.\n Estadísticas hasta hoy:\n- {number_products_alerted} vencimientos alertados.\n- Con Sr. Merma {number_products_maped} vencimientos mapeados.')
             print(ms2)
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute,18)
-                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+1,18)
+                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,18)
+                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,18)
                 continue
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,18)
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,18)
@@ -110,7 +110,73 @@ def avisar_admins_consolidado():
     for tienda in tiendas_database:
         hour = int(time.strftime("%H"))
         minute = int(time.strftime("%M"))
-        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos del siguiente mes""", hour, minute)
+        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos del siguiente mes""", hour, minute+1)
+
+def avisar_actualizar_data():
+    """
+    Función para avisar a los admins que actualizen el Listado de stock por ser viernes (Cambio de precios).
+    """
+    for tienda in tiendas_database:
+        hour = int(time.strftime("%H"))
+        minute = int(time.strftime("%M"))
+        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es viernes, te recomiendo actualizar tu listado de stock por el cambio de precio \nLo encuentras el excel de Mr.Mapeador en "Data + Número de tienda" """, hour, minute+1)
+
+def enlist_products_errors():
+    """
+    Esta función extrae todos los productos que tienen un valor unitario de 0 y retorna una nested-list
+    con el nombre de este producto y en qué columnas se encuentran.
+    Esto porque no tiene sentido. ¿Cómo vas a mapear un producto que, según tu inventario, no tienes?
+    """
+    minimarkets_of_products_with_error = (sheet2.col_values(8)) # Getting all "Tienda" numbers of all products.
+    names_of_products_with_error = (sheet2.col_values(9)) # Getting all names of all products.
+    rownumber_of_products_with_error = (sheet2.col_values(10)) # Getting all row numbers of all products.
+    list_of_products_with_error = [
+                                    [
+                                        minimarkets_of_products_with_error[i], # Getting "Tienda" number of each product
+                                        names_of_products_with_error[i], # Getting the name of each product
+                                        rownumber_of_products_with_error[i] # Getting the row number of each product
+                                    ]
+                                    for i in range(1,len(minimarkets_of_products_with_error))
+                                ]
+    print(list_of_products_with_error)
+    return list_of_products_with_error
+
+def change_alerted_status_error(list_of_products_errors):
+    """
+    Esta función cambia el status de la columna "Error alertado" de los errores ya alertados por Dr.Errors en
+    la sheet1.
+    """
+    rows_of_errors_alerted = [list_of_products_errors[i][2] for i in range(len(list_of_products_errors))]
+
+    for row_number in rows_of_errors_alerted:
+        cell = f"S{row_number}"
+        sheet1.update(cell,"YES")
+        continue
+
+def run_dr_errors(list_of_products_errors):
+    """
+    Función principal: Envia los productos a vencer de cada tienda a sus respectivos grupos de wsp.
+    En caso no halla productos a alertar, envia un mensaje avisandolo al grupo.
+    Toma como párametro la nested-list generada en "enlist_products_to_alert()"
+    """
+    for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
+        hour = int(time.strftime("%H"))
+        minute = int(time.strftime("%M"))
+        #Enlistar todos los nombres de productos por vencerse
+        products_name = [list_of_products_errors[i][1] for i in range(len(list_of_products_errors)) if list_of_products_errors[i][0] == tienda[4]]
+        rows_products = [list_of_products_errors[i][2] for i in range(len(list_of_products_errors)) if list_of_products_errors[i][0] == tienda[4]]
+        if products_name != []: #Si hay productos con errores, envia esto:
+            name_and_row_products = [(f"{products_name[i]} en la fila {rows_products[i]}") for i in range(len(rows_products))]
+            products_name = "\n- ".join(name_and_row_products)
+            print(products_name, "Enviando a ", tienda[0])
+            ms1 = """Estos productos salieron con error: \n""" +"- "+ products_name + '\n Se recomienda revisar porque en el listado aparecen como si tuvieran 0'
+            print(ms1)
+            if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
+                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,18)
+                continue
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,18)
+        else: #Si no hay productos con errores, envia esto:
+            continue
 
 def run():
     print("Empezando programa")
@@ -119,8 +185,21 @@ def run():
     run_dr_merma(list_exp_products)
     print("Mensajes enviados")
     change_alerted_status_of_product(list_exp_products)
+    print("Productos status cambiados")
+    print("Revisar si hay productos con errores")
+    list_products_errs = enlist_products_errors()
+    if list_products_errs != []:
+        run_dr_errors(list_products_errs)
+        print("Errores enviados")
+        change_alerted_status_error(list_products_errs)
+        print("Errores status cambiados")
     todays_number = int(time.strftime("%d"))
+    name_of_today = int(time.strftime("%A"))
+    if name_of_today == 'Friday':
+        print("Avisando a los admin para actualizar el listado de stock")
+        avisar_actualizar_data()
     if todays_number == 28:
+        print('Avisando a admins para mapear los proximos a vencer')
         avisar_admins_consolidado()
     print("Programa Finalizado")
 
