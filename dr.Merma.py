@@ -81,7 +81,7 @@ def run_dr_merma(list_of_products_alerted):
     number_products_maped = sheet2.cell(3,2).value
     for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
         hour = int(time.strftime("%H"))
-        minute = int(time.strftime("%M"))
+        minute = int(time.strftime("%M")) + 1
         #Enlistar todos los nombres de productos por vencerse
         products_name = [list_of_products_alerted[i][1] for i in range(len(list_of_products_alerted)) if list_of_products_alerted[i][0] == tienda[4]]
         if products_name != []: #Si hay productos por vencerse, envia esto:
@@ -109,7 +109,7 @@ def avisar_admins_consolidado():
     """
     for tienda in tiendas_database:
         hour = int(time.strftime("%H"))
-        minute = int(time.strftime("%M"))
+        minute = int(time.strftime("%M")) + 1
         pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos del siguiente mes""", hour, minute+1)
 
 def avisar_actualizar_data():
@@ -118,7 +118,7 @@ def avisar_actualizar_data():
     """
     for tienda in tiendas_database:
         hour = int(time.strftime("%H"))
-        minute = int(time.strftime("%M"))
+        minute = int(time.strftime("%M")) + 1
         pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es viernes, te recomiendo actualizar tu listado de stock por el cambio de precio \nLo encuentras el excel de Mr.Mapeador en "Data + Número de tienda" """, hour, minute+1)
 
 def enlist_products_errors():
@@ -161,7 +161,7 @@ def run_dr_errors(list_of_products_errors):
     """
     for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
         hour = int(time.strftime("%H"))
-        minute = int(time.strftime("%M"))
+        minute = int(time.strftime("%M")) + 1
         #Enlistar todos los nombres de productos por vencerse
         products_name = [list_of_products_errors[i][1] for i in range(len(list_of_products_errors)) if list_of_products_errors[i][0] == tienda[4]]
         rows_products = [list_of_products_errors[i][2] for i in range(len(list_of_products_errors)) if list_of_products_errors[i][0] == tienda[4]]
@@ -194,7 +194,7 @@ def run():
         change_alerted_status_error(list_products_errs)
         print("Errores status cambiados")
     todays_number = int(time.strftime("%d"))
-    name_of_today = int(time.strftime("%A"))
+    name_of_today = time.strftime("%A")
     if name_of_today == 'Friday':
         print("Avisando a los admin para actualizar el listado de stock")
         avisar_actualizar_data()
