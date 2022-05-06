@@ -1,3 +1,4 @@
-Log 29/04:
-- Se creó una app no-code con la herramienta de google "appsheets". Esta soluciona DE UNA todos los problemas o retos tenía que pasar mi desarrollo para que mi solución tuviera botón de volver.
-- Además, al ser una app, cualquiera puede descargarlo en su teléfono y hacer sus vencimientos de manera asíncrona, ya Luz no tiene que hacerlos uno por uno y sus colegas ahora pueden hacerlo por su propia cuenta
+Log 06/05:
+- Ahora Dr. Merma funciona para los otros locales Mass.
+- Pendientes: - Revisar las notas del excel.
+              - Ver como configurar la pantalla de Mr.Mapeador para que aparezcan solo los productos mapeados por ese local.
