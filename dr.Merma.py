@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
+
+# Importar módulos necesarios
 from unicodedata import name
 import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from pprint import pprint
 import datetime
-from datetime import date
 import pywhatkit 
 import time
-import pyautogui
 
-# Global variables
+# Global variables of the spreadsheet.
 
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 
@@ -24,22 +23,43 @@ sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
 
 sheet2 = spread_sheet.worksheet('Python variables')
 
-sheet3 = spread_sheet.worksheet('DataJst')
+tiendas_database= [
+    ['Garzon 6', 'FTDFIE7D1P14BcNXz033we', '+51959260520','Shirel', '1162'],
+    ['Garzon 11', 'IYflbYgMNltHzFJlpXrIlX', '+51946555502','Jubitza','831'],
+    ['Del Aire', '', '+51935924465','Luz', '487']
+] # Lists of lists of name of each tienda, id of the whatsapp group, number of the admin, name of her/him, num of the tienda. 
 
-currenthour = int(time.strftime("%H"))
-currentminute = int(time.strftime("%M"))
-todays_number = int("".join(list(time.strftime("%D"))[3:5]))
-
-def enlist_products_not_alerted():
-    list_of_products_not_alerted = sheet2.col_values(4)
-    list_of_products_not_alerted.pop(0)
+def enlist_products_to_alert():
+    """
+    Esta función toma como argument un int (El número de la tienda para filtrar los productos), extrae
+    todos los productos que se van a vencer de la cuarta columna de la segunda spreadsheet, y retorna
+    una lista con listas sobre las características de vencimiento de cada producto.
+    """
+    minimarkets_of_products_not_alerted = (sheet2.col_values(3)) # Getting "Tienda" number of each product
+    names_of_products_not_alerted = (sheet2.col_values(4)) # Getting the name of each product
+    daysleft_of_products_not_alerted = (sheet2.col_values(7)) # Getting "the days left" value of each product
+    rownumber_of_products_not_alerted = (sheet2.col_values(8)) # Getting the row number of each product
+    list_of_products_not_alerted = [
+                                    [
+                                        minimarkets_of_products_not_alerted[i],
+                                        names_of_products_not_alerted[i],
+                                        daysleft_of_products_not_alerted[i],
+                                        rownumber_of_products_not_alerted[i]
+                                    ]
+                                    for i in range(1,len(names_of_products_not_alerted))
+                                    if ((minimarkets_of_products_not_alerted[i] == '831') or (int(daysleft_of_products_not_alerted[i]) < 4))
+                                ]
     print(list_of_products_not_alerted)
     return list_of_products_not_alerted
 
-def change_alerted_value_of_product():
-    list_of_index_products_alerted = sheet2.col_values(8)
-    list_of_index_products_alerted.pop(0)
-    for row_number in list_of_index_products_alerted:
+def change_alerted_status_of_product(list_of_products_alerted):
+    """
+    Esta función cambia el status de la columna "alert it?" de los productos ya alertados.
+    """
+    rows_of_products_alerted = [list_of_products_alerted[i][3] for i in range(len(list_of_products_alerted))]
+    print(rows_of_products_alerted)
+
+    for row_number in rows_of_products_alerted:
         cell = f"P{row_number}"
         sheet1.update(cell,"YES")
         contador = (int((sheet2.cell(2,2).value))) + 1
@@ -47,36 +67,57 @@ def change_alerted_value_of_product():
         sheet2.update(cell,contador)
         continue
 
-def dr_merma(list_exp_products, hour, minute):
-    products = "\n- ".join(list_exp_products)
-    print(products)
+def run_dr_merma(list_exp_products):
+    """
+    Función principal: Envia los productos a vencer a cada tienda de tiendas_database o
+    envia un mensaje si no hay productos encontrados.
+    Toma como párametro la lista generada en "enlist_products_to_alert()"
+    """
     number_products_alerted = sheet2.cell(2,2).value
     number_products_maped = sheet2.cell(3,2).value
-    ms1 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products + '\nPara hoy ' + str((date.today()))
-    ms2 = (f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.')
-    ms3 = (f"Turno 1 Responda este mensaje confirmando la informacion recibida, por favor.")
-    print(ms1)
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms3, hour, minute,18)
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms1, hour, minute+1,18)
-    pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',ms2, hour, minute+2,18) 
+    for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
+        hour = int(time.strftime("%H"))
+        minute = int(time.strftime("%M"))
+        products_name = [list_exp_products[i][1] for i in range(len(list_exp_products)) if list_exp_products[i][0] == tienda[4]]
+        if products_name != []: #Si hay productos por vencerse, envia esto:
+            products_name = "\n- ".join(products_name)
+            print(products_name, "Enviando a ", tienda[0])
+            ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
+            ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma.\n Estadísticas hasta hoy:\n- {number_products_alerted} vencimientos alertados.\n- Con Sr. Merma {number_products_maped} vencimientos mapeados.')
+            print(ms2)
+            if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
+                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute,18)
+                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+1,18)
+                continue
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,18)
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,18)
+        else: #Si no hay productos por vencerse, envia esto:
+            ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
+            if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
+                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,18)
+                continue
+            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,18)
 
-def run(hour,minute):
-    list_exp_products = enlist_products_not_alerted()
-    if list_exp_products != []:
-        dr_merma(list_exp_products,hour,minute)
-        change_alerted_value_of_product()
-    else:
-        number_products_alerted = sheet2.cell(2,2).value
-        number_products_maped = sheet2.cell(3,2).value
-        print('Not bad products founded ' + str((date.today())))
-        pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',"Dr. Merma no ha encontrado malos vencimientos para hoy " + str((date.today())), hour, minute,18)
-        pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Hasta hoy he alertado {number_products_alerted} vencimientos y Sr. Merma mapeado {number_products_maped} productos.'), hour, minute+1,18)
-        pywhatkit.sendwhatmsg_to_group('FTDFIE7D1P14BcNXz033we',(f'Me despido de turno 1'), hour, minute+2,18)
+def avisar_admins_consolidado():
+    """
+    Función para avisar a las admins de cada tienda que mapeen vencimientos del siguiente mes
+    """
+    for tienda in tiendas_database:
+        hour = int(time.strftime("%H"))
+        minute = int(time.strftime("%M"))
+        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos del siguiente mes""", hour, minute)
+
+def run():
+    print("Empezando programa")
+    list_exp_products = enlist_products_to_alert()
+    run_dr_merma(list_exp_products)
+    change_alerted_status_of_product(list_exp_products)
+    todays_number = int(time.strftime("%d"))
+    if todays_number == 28:
+        avisar_admins_consolidado()
+    print("Programa Finalizado")
 
 if __name__ == '__main__':
-    run(6,0)
+    run()
     print("""
-----------------------------------------------------------""")
-    # run(currenthour,currentminute+1)
-    if todays_number == 28:
-        pywhatkit.sendwhatmsg("+51935924465", """Hola Luz. Soy Dr.Merma. Hoy es 28, se recomienda empezar el mapeo de vencimientos.""", 6, 20,18)
+----------------------------------------------------------""")  
