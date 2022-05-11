@@ -23,12 +23,15 @@ sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
 
 sheet2 = spread_sheet.worksheet('Python variables')
 
+sheet3 = spread_sheet.worksheet('Python variables2')
+
 # Nested-list of all characteristics of each Mass minimarket (name,id_wsp_group, phone number of the admin,
 # name of the admin, and minimarket's id)
 tiendas_database= [
     ['Garzon 6', 'FTDFIE7D1P14BcNXz033we', '+51959260520','Shirel', '1162'],
     ['Garzon 11', 'IYflbYgMNltHzFJlpXrIlX', '+51946555502','Jubitza','831'],
-    ['Del Aire', '', '+51935924465','Luz', '487']
+    ['Del Aire', '', '+51935924465','Luz', '487'],
+    ['Larra', 'KZbZ8dKu7Qr2Yu7poBwGs6', '+51953701471','Katheryne', '762']
 ] 
 
 def enlist_products_to_alert():
@@ -37,23 +40,32 @@ def enlist_products_to_alert():
     de la segunda spreadsheet, y retorna una nested-list con las características de vencimiento
     de cada producto.
     """
-    minimarkets_of_products_not_alerted = (sheet2.col_values(3)) # Getting all "Tienda" numbers of all products.
-    names_of_products_not_alerted = (sheet2.col_values(4)) # Getting all names of all products.
-    daysleft_of_products_not_alerted = (sheet2.col_values(5)) # Getting all "days left"s value of all products.
-    rownumber_of_products_not_alerted = (sheet2.col_values(6)) # Getting all row numbers of all products.
-    list_of_products_not_alerted = [
-                                    [
-                                        minimarkets_of_products_not_alerted[i], # Getting "Tienda" number of each product
-                                        names_of_products_not_alerted[i], # Getting the name of each product
-                                        daysleft_of_products_not_alerted[i], # Getting "the days left" value of each product
-                                        rownumber_of_products_not_alerted[i] # Getting the row number of each product
+    print("Enlistando productos por vencer")
+    try:
+        minimarkets_of_products_not_alerted = (sheet2.col_values(3)) # Getting all "Tienda" numbers of all products.
+        names_of_products_not_alerted = (sheet2.col_values(4)) # Getting all names of all products.
+        daysleft_of_products_not_alerted = sheet2.col_values(5) # Getting all "days left"s value of all products.
+        rownumber_of_products_not_alerted = (sheet2.col_values(6)) # Getting all row numbers of all products.
+        list_of_products_not_alerted = [
+                                        [
+                                            minimarkets_of_products_not_alerted[i], # Getting "Tienda" number of each product
+                                            names_of_products_not_alerted[i], # Getting the name of each product
+                                            daysleft_of_products_not_alerted[i], # Getting "the days left" value of each product
+                                            rownumber_of_products_not_alerted[i] # Getting the row number of each product
+                                        ]
+                                        for i in range(1,len(names_of_products_not_alerted))
+                                        if (((minimarkets_of_products_not_alerted[i] == '831') or (minimarkets_of_products_not_alerted[i] == '762')) or (int(daysleft_of_products_not_alerted[i]) < 4))
+                                        # La tienda 831 es un caso especial debido a que hacen sus mermas por reglas de 5 días antes del vencimiento.
+                                        # Justo el número máximo que acepta el query de celda C1 de la sheet2
                                     ]
-                                    for i in range(1,len(names_of_products_not_alerted))
-                                    if ((minimarkets_of_products_not_alerted[i] == '831') or (int(daysleft_of_products_not_alerted[i]) < 4))
-                                    # La tienda 831 es un caso especial debido a que hacen sus mermas por reglas de 5 días antes del vencimiento.
-                                    # Justo el número máximo que acepta el query de celda C1 de la sheet2
-                                ]
-    print(list_of_products_not_alerted)
+    except Exception as error:
+        print("Sucedió un error al enlistar productos por vencer")
+        print(error)
+    if list_of_products_not_alerted == []:
+        print("Terminado. No se encontró productos por vencerse")
+    else:
+        print("Terminado. Productos por vencerse enlistados")
+        print(list_of_products_not_alerted)
     return list_of_products_not_alerted
 
 def change_alerted_status_of_product(list_of_products_alerted):
@@ -81,27 +93,30 @@ def run_dr_merma(list_of_products_alerted):
     number_products_maped = sheet2.cell(3,2).value
     for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
         hour = int(time.strftime("%H"))
-        minute = int(time.strftime("%M")) + 1
+        if int(time.strftime("%S")) >= 51:
+            minute = int(time.strftime("%M")) + 1
+        else:
+            minute = int(time.strftime("%M"))
         #Enlistar todos los nombres de productos por vencerse
         products_name = [list_of_products_alerted[i][1] for i in range(len(list_of_products_alerted)) if list_of_products_alerted[i][0] == tienda[4]]
         if products_name != []: #Si hay productos por vencerse, envia esto:
             products_name = "\n- ".join(products_name)
             print(products_name, "Enviando a ", tienda[0])
+            ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma\nEstadisticas hasta hoy:\n- {number_products_alerted} vencimientos alertados conmigo\n-{number_products_maped} vencimientos mapeados con Mr. Mapeador')
             ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
-            ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma.\n Estadísticas hasta hoy:\n- {number_products_alerted} vencimientos alertados.\n- Con Sr. Merma {number_products_maped} vencimientos mapeados.')
             print(ms2)
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,18)
-                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,18)
+                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,8)
+                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,8)
                 continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,18)
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,18)
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,8)
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,8)
         else: #Si no hay productos por vencerse, envia esto:
             ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,18)
+                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,8)
                 continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,18)
+            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,8)
 
 def avisar_admins_consolidado():
     """
@@ -127,18 +142,26 @@ def enlist_products_errors():
     con el nombre de este producto y en qué columnas se encuentran.
     Esto porque no tiene sentido. ¿Cómo vas a mapear un producto que, según tu inventario, no tienes?
     """
-    minimarkets_of_products_with_error = (sheet2.col_values(8)) # Getting all "Tienda" numbers of all products.
-    names_of_products_with_error = (sheet2.col_values(9)) # Getting all names of all products.
-    rownumber_of_products_with_error = (sheet2.col_values(10)) # Getting all row numbers of all products.
-    list_of_products_with_error = [
-                                    [
-                                        minimarkets_of_products_with_error[i], # Getting "Tienda" number of each product
-                                        names_of_products_with_error[i], # Getting the name of each product
-                                        rownumber_of_products_with_error[i] # Getting the row number of each product
+    print("Enlistando productos con errores")
+    try:
+        minimarkets_of_products_with_error = (sheet2.col_values(8)) # Getting all "Tienda" numbers of all products.
+        names_of_products_with_error = (sheet2.col_values(9)) # Getting all names of all products.
+        rownumber_of_products_with_error = (sheet2.col_values(10)) # Getting all row numbers of all products.
+        list_of_products_with_error = [
+                                        [
+                                            minimarkets_of_products_with_error[i], # Getting "Tienda" number of each product
+                                            names_of_products_with_error[i], # Getting the name of each product
+                                            rownumber_of_products_with_error[i] # Getting the row number of each product
+                                        ]
+                                        for i in range(1,len(minimarkets_of_products_with_error))
                                     ]
-                                    for i in range(1,len(minimarkets_of_products_with_error))
-                                ]
-    print(list_of_products_with_error)
+    except Exception as error:
+        print("Sucedió un error al enlistar los productos con errores")
+        print(error)
+    if list_of_products_with_error == []:
+        print("Terminado. No se encontró productos con errores")
+    else:
+        print("Terminado. Errores enlistados con exito")
     return list_of_products_with_error
 
 def change_alerted_status_error(list_of_products_errors):
@@ -175,13 +198,12 @@ def run_dr_errors(list_of_products_errors):
                 pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,18)
                 continue
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,18)
-        else: #Si no hay productos con errores, envia esto:
+        else: #Si no hay productos con errores, continua:
             continue
 
 def run():
     print("Empezando programa")
     list_exp_products = enlist_products_to_alert()
-    print("Productos enlistados con exito")
     run_dr_merma(list_exp_products)
     print("Mensajes enviados")
     change_alerted_status_of_product(list_exp_products)
