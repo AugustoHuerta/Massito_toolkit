@@ -106,17 +106,17 @@ def run_dr_merma(list_of_products_alerted):
             ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
             print(ms2)
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,8)
-                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,8)
+                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,11)
+                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,11)
                 continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,8)
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,8)
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,11)
+            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
         else: #Si no hay productos por vencerse, envia esto:
             ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,8)
+                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,11)
                 continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,8)
+            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,11)
 
 def avisar_admins_consolidado():
     """
