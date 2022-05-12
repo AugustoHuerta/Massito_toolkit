@@ -31,7 +31,7 @@ tiendas_database= [
     ['Garzon 6', 'FTDFIE7D1P14BcNXz033we', '+51959260520','Shirel', '1162'],
     ['Garzon 11', 'IYflbYgMNltHzFJlpXrIlX', '+51946555502','Jubitza','831'],
     ['Del Aire', '', '+51935924465','Luz', '487'],
-    ['Larra', 'KZbZ8dKu7Qr2Yu7poBwGs6', '+51953701471','Katheryne', '762']
+    ['Larra', 'KZbZ8dKu7Qr2Yu7poBwGs6', '+51953701471','Katheryne', '762'],
     ['Luzuriaga', 'H3rABFLyEOjCeTLaEwKT2K','+51951146921','Diego','569'],
     ['Miller', 'HPEv9MC73SkG3QwXyFdj0h','+51993931299','Jorge','745']
 ] 
@@ -204,17 +204,12 @@ def run_dr_errors(list_of_products_errors):
         else: #Si no hay productos con errores, continua:
             continue
 
-def avisar_noticias():
+def avisadora():
     """
     Función para avisar a los admins de los avances semanales del proyecto.
     """
-    for tienda in tiendas_database:
-        hour = int(time.strftime("%H"))
-        if int(time.strftime("%S")) >= 51:
-            minute = int(time.strftime("%M")) + 1
-        else:
-            minute = int(time.strftime("%M"))
-        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy señorita anunciadora. Avances del frente:
+    def mensaje(name):
+        mensaje = f"""Hola {name}. Soy señorita anunciadora. Avances del frente:
         1. Mr. Mapeador ya tiene la venta promedio agregadada. Lo puedes ver en el excel ;D.
         - Además:
             a) Se ha agregado una columna incluyendo coordinador de cada tienda.
@@ -231,6 +226,7 @@ def avisar_noticias():
         ¿Qué se va a trabajar esta semana?
         1. Configuración e impulsación de Madam Ventas.
         - Ella se encargará de automatizar tu cubicaje lo más posible, para tu tienda y todas las demás.
+        - Se calcula que ayudará a ganar 125,000 soles mensuales a todo el formato en ahorro de merma y quiebre de venta.
         2. Solución de errores.
         - Evitar que Mr. Mapeador saque como "0" productos que SÍ están en stock.
         3. Comunicación con los coordinadores Edi y Luis:
@@ -238,7 +234,22 @@ def avisar_noticias():
 
         Eso sería todo la verdad. Massito, Dr. Merma, Mr. Mapeador y yo esperamos lograrlo.
         Recuerda que puedes chequear nuestro impacto con este reporte en vivo! (En desarrollo): https://datastudio.google.com/reporting/60594fa0-98c5-47ae-a14f-6c2208be8331/page/LJWsC
-        No olvides, {tienda[3]} que sin tu apoyo esto no habría sido posible""", hour, minute+1)
+        No olvides, {name} que sin tu apoyo esto no habría sido posible"""
+        return mensaje
+
+    # Enviarlo a cada admin de cada tienda
+    for tienda in tiendas_database:
+        hour = int(time.strftime("%H"))
+        if int(time.strftime("%S")) >= 51:
+            minute = int(time.strftime("%M")) + 1
+        else:
+            minute = int(time.strftime("%M"))
+        name = tienda[3]
+        mensajito = mensaje(name)
+        pywhatkit.sendwhatmsg(tienda[2], mensajito, hour, minute+1)
+    # Enviarlo al coordinador Luis
+    mensajito = mensaje('Luis')
+    pywhatkit.sendwhatmsg('+51989248667', mensajito, hour, minute+6)
 
 def run():
     print("Empezando programa")
@@ -264,7 +275,8 @@ def run():
         avisar_admins_consolidado()
     if name_of_today == 'Monday':
         print("Avisando a los admin avances del frente")
-        avisar_noticias()
+        avisadora()
+
 if __name__ == '__main__':
     run()
     print("""
