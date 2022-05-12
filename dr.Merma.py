@@ -32,6 +32,8 @@ tiendas_database= [
     ['Garzon 11', 'IYflbYgMNltHzFJlpXrIlX', '+51946555502','Jubitza','831'],
     ['Del Aire', '', '+51935924465','Luz', '487'],
     ['Larra', 'KZbZ8dKu7Qr2Yu7poBwGs6', '+51953701471','Katheryne', '762']
+    ['Luzuriaga', 'H3rABFLyEOjCeTLaEwKT2K','+51951146921','Diego','569'],
+    ['Miller', 'HPEv9MC73SkG3QwXyFdj0h','+51993931299','Jorge','745']
 ] 
 
 def enlist_products_to_alert():
@@ -113,6 +115,7 @@ def run_dr_merma(list_of_products_alerted):
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
         else: #Si no hay productos por vencerse, envia esto:
             ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
+            print(minute)
             if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
                 pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,11)
                 continue
@@ -201,6 +204,42 @@ def run_dr_errors(list_of_products_errors):
         else: #Si no hay productos con errores, continua:
             continue
 
+def avisar_noticias():
+    """
+    Función para avisar a los admins de los avances semanales del proyecto.
+    """
+    for tienda in tiendas_database:
+        hour = int(time.strftime("%H"))
+        if int(time.strftime("%S")) >= 51:
+            minute = int(time.strftime("%M")) + 1
+        else:
+            minute = int(time.strftime("%M"))
+        pywhatkit.sendwhatmsg(tienda[2], f"""Hola {tienda[3]}. Soy señorita anunciadora. Avances del frente:
+        1. Mr. Mapeador ya tiene la venta promedio agregadada. Lo puedes ver en el excel ;D.
+        - Además:
+            a) Se ha agregado una columna incluyendo coordinador de cada tienda.
+            b) Sale en rojo los productos que NO vas a poder vender en el tiempo que se van vencer.
+            c) Se ha agregado codigo de proveedor y descripción de proveedor.
+            d) Ahora los avisos de Dr. Merma son en base al cronograma de retiro. Esto aplica para todas las tiendas excepto Garzón 6 (Nosotros podemos bapear)
+        2. Dr. Merma ya avisa 15 dias con anterioridad si tienes la capacidad de vender o no el producto.
+        - Esto para que puedas hacer una gestión de emergencia y trasladarlo entre otras tiendas.
+        3. Además. Gracias al apoyo de todas las tiendas y del diablo (Luzmary):
+            a) Ya se tiene la base de datos necesaria para automatizar el cubicaje.
+            b) Se esta ya programando el robot que envia correos automaticamente a los de ventas.
+            c) Ahora se está configurando el reporte de dinero perdido por cada tienda. Esto por las ventas que pierdes por quiebre y el dinero mermado en vencimientos.
+
+        ¿Qué se va a trabajar esta semana?
+        1. Configuración e impulsación de Madam Ventas.
+        - Ella se encargará de automatizar tu cubicaje lo más posible, para tu tienda y todas las demás.
+        2. Solución de errores.
+        - Evitar que Mr. Mapeador saque como "0" productos que SÍ están en stock.
+        3. Comunicación con los coordinadores Edi y Luis:
+        - Esto para elevar la conversación a niveles más altos con el objetivo de la venta a tiendas Mass.
+
+        Eso sería todo la verdad. Massito, Dr. Merma, Mr. Mapeador y yo esperamos lograrlo.
+        Recuerda que puedes chequear nuestro impacto con este reporte en vivo! (En desarrollo): https://datastudio.google.com/reporting/60594fa0-98c5-47ae-a14f-6c2208be8331/page/LJWsC
+        No olvides, {tienda[3]} que sin tu apoyo esto no habría sido posible""", hour, minute+1)
+
 def run():
     print("Empezando programa")
     list_exp_products = enlist_products_to_alert()
@@ -223,9 +262,11 @@ def run():
     if todays_number == 28:
         print('Avisando a admins para mapear los proximos a vencer')
         avisar_admins_consolidado()
-    print("Programa Finalizado")
-
+    if name_of_today == 'Monday':
+        print("Avisando a los admin avances del frente")
+        avisar_noticias()
 if __name__ == '__main__':
     run()
     print("""
 ----------------------------------------------------------""")  
+# Configurarlo para el caso de Luzuriaga
