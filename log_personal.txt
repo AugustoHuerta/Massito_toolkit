@@ -1,4 +1,5 @@
-Log 06/05:
-- Ahora Dr. Merma funciona para los otros locales Mass.
+Log 20/05:
+- Reestructurar appsheets según "Mr Mapeador next level.py"
 - Pendientes: - Revisar las notas del excel.
-              - Ver como configurar la pantalla de Mr.Mapeador para que aparezcan solo los productos mapeados por ese local.
+              - Actualizar los requeriments según los packages de "Mr Mapeador next level.py".
+- Quitado "Mr Mapeador.py" y "all_list.py" por ser ahora inutiles por la aplicación
