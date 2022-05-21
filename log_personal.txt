@@ -1,5 +1,25 @@
-Log 20/05:
-- Reestructurar appsheets según "Mr Mapeador next level.py"
-- Pendientes: - Revisar las notas del excel.
-              - Actualizar los requeriments según los packages de "Mr Mapeador next level.py".
-- Quitado "Mr Mapeador.py" y "all_list.py" por ser ahora inutiles por la aplicación
+Log 21/05:
+
+### Noticias:
+- Mr. Mapeador2.0 ahora está aquí!!!!.
+    - Ahora la conversión de archivos xlsx de movimientos de inventario de cada tienda está aquí.
+    - Lo ejecuta y lo envía directamente a los google spreadhsheets.
+    - Ya no más fórmulas enmarañadas ni 10 minutos de tiempos muertos. (Todo en 1 minuto)
+
+### Pendientes:
+- ¿Existen productos que si se tengan en stock pero que no se hallan vendido? 
+    - Revisar ese posible hueco en la toma de decisiones.
+    - Podría haber el caso de una tienda que venda 0 gaseosas pero SÍ las tengan en stock
+- Revisar las notas del excel.
+- Ver si puedo mejorar Mr.Mapeador2.0 con asyn o multithreating techniques.
+
+### Notas personales:
+- Ahora tengo que lavar mi ropa y limpiar mi cuarto.
+- Ver si puedo crear una versión miniatura del nuevo Mr.Mapeador para ayudar a los administradores
+    a encontrar más rápidos sus ventas en un período determinado. (La cuestión es ir a cada tienda a instalarlo.)
+- Ahora toca ir al 100% a avanzar al tema de Madam Ventas (Que ahora se llamará agente doble 0)
+- Terminar el curso de Platzi al 100, terminar mis ankidecks y pasar a la acción con este programa.
+- Actualizar a Señorita anunciadora.
+- Y elevar la barra una vez más!
+
+gl hf!
