@@ -983,3 +983,43 @@ Time: 5:48
 Phone Number: +51993931299
 Message: Hola Jorge. Soy Dr.Merma. Hoy es viernes, te recomiendo actualizar tu listado de stock por el cambio de precio Lo encuentras el excel de Mr.Mapeador en "Data + Número de tienda"
 --------------------
+Date: 21/5/2022
+Time: 5:30
+Group ID: FTDFIE7D1P14BcNXz033we
+Message: Buenos dias Garzon 6, soy Dr. MermaEstadisticas hasta hoy:- 106 vencimientos alertados conmigo-280 vencimientos mapeados con Mr. Mapeador
+--------------------
+Date: 21/5/2022
+Time: 5:31
+Group ID: FTDFIE7D1P14BcNXz033we
+Message: Dr. Merma 👨‍⚕ recomienda revisar: - BELLS YOGURT BEBIBLE VAINILLA GL X 1.9KG- BELLS YOGURT BEBIBLE FRESA GL X 1.9KG- BELL'S PAN DE MOLDE BLANCO BL 500G 1162Para hoy 2022-05-21
+--------------------
+Date: 21/5/2022
+Time: 5:32
+Group ID: IYflbYgMNltHzFJlpXrIlX
+Message: Buenos dias Garzon 11, soy Dr. MermaEstadisticas hasta hoy:- 106 vencimientos alertados conmigo-280 vencimientos mapeados con Mr. Mapeador
+--------------------
+Date: 21/5/2022
+Time: 5:33
+Group ID: IYflbYgMNltHzFJlpXrIlX
+Message: Dr. Merma 👨‍⚕ recomienda revisar: - BELLS TOSTADAS BLANCAS BL10UN 831Para hoy 2022-05-21
+--------------------
+Date: 21/5/2022
+Time: 5:34
+Phone Number: +51935924465
+Message: Felicidades. Ningún vencimiento para Del Aire el día 2022-05-21 Que la pasen bien!
+--------------------
+Date: 21/5/2022
+Time: 5:35
+Group ID: KZbZ8dKu7Qr2Yu7poBwGs6
+Message: Felicidades. Ningún vencimiento para Larra el día 2022-05-21 Que la pasen bien!
+--------------------
+Date: 21/5/2022
+Time: 5:36
+Group ID: 
+Message: Felicidades. Ningún vencimiento para Luzuriaga el día 2022-05-21 Que la pasen bien!
+--------------------
+Date: 21/5/2022
+Time: 5:37
+Group ID: HPEv9MC73SkG3QwXyFdj0h
+Message: Felicidades. Ningún vencimiento para Miller el día 2022-05-21 Que la pasen bien!
+--------------------
