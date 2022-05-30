@@ -14,16 +14,15 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 
 client = gspread.authorize(creds)
 
-spread_sheet = client.open("Mr.Mapeador database") # Open the spreadhseet
+spread_sheet = client.open("Mr.Mapeador EDDY") # Open the spreadhseet
 
 sheet1 = spread_sheet.worksheet('Mr.Mapeador database')
 
 sheet2 = spread_sheet.worksheet('Python variables')
 
-sheet3 = spread_sheet.worksheet('Python variables2')
 
 tiendas_database= [
-    ['Miller', 'HPEv9MC73SkG3QwXyFdj0h','+51993931299','Jorge','745']
+    ['Del Aire', 'IOSdH1NiiPdL6hG095SYT2','+51993548559','Jael','487'] 
 ]
 
 def run_dr_merma(list_of_products_alerted):
@@ -48,18 +47,12 @@ def run_dr_merma(list_of_products_alerted):
             ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma\nEstadisticas hasta hoy:\n- {number_products_alerted} vencimientos alertados conmigo\n-{number_products_maped} vencimientos mapeados con Mr. Mapeador')
             ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
             print(ms2)
-            if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2],ms1, hour, minute+1,11)
-                pywhatkit.sendwhatmsg(tienda[2],ms2, hour, minute+2,11)
-                continue
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,11)
             pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
         else: #Si no hay productos por vencerse, envia esto:
             ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
             print(minute)
-            if tienda[4] == '487': #La tienda 487 es un caso especial. No estoy en su grupo.
-                pywhatkit.sendwhatmsg(tienda[2], ms3, hour, minute+1,11)
-                continue
+        
             pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,11)
     # Enviar mensaje al admin.
     pywhatkit.sendwhatmsg(tiendas_database[0][2], f"""Felicidades administrador, Dr. Merma instalado""", 5, 50)
