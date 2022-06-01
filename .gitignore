@@ -1,5 +1,12 @@
 /venv
-creds.json
+
 *.xlsx
+*.csv
+*.ipynb
+
+creds.json
+scraper/creds_ventas.py
+
 last_output_dr_Merma.txt
 PyWhatKit_DB.txt
+scraper/chromedriver
