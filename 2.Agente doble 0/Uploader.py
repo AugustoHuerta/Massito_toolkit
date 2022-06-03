@@ -33,9 +33,11 @@ def get_worksheet(spread_sheets):
     list_sph = [sph for sph in spread_sheets.keys()]
     for i, sph in enumerate(list_sph,1):
             print(f"{i}. {sph}")
-    sph_selected = list_sph[int(input("Escribe su número aquí: "))-1]
+    #sph_selected = list_sph[int(input("Escribe su número aquí: "))-1]
+    sph_selected = list_sph[0] #Que por defecto sea 'Luis para agilizar las cosas
     print(f"Spreadsheet selected: {sph_selected}")
     sph_selected = spread_sheets[sph_selected]
+    
     worksheet = sph_selected.worksheet('Nuevo cubicaje')
     return worksheet
 
@@ -63,7 +65,8 @@ def run():
     worksheet.update([final_df.columns.values.tolist()] + final_df.values.tolist())
     print("Logrado. Tiempo tomado:",time.process_time() - start)
     
-run()
+if __name__ == '__main__':
+    run()
 #abril.xlsx
 # Convert csv to a tiny dataframe 
 #final_df.to_csv('abril2.csv', index=False) Si lo quisieramos exportar a un csv

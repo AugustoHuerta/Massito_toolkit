@@ -3,9 +3,10 @@
 *.xlsx
 *.csv
 *.ipynb
+*.pyc
 
 creds.json
-scraper/creds_ventas.py
+creds_ventas.py
 
 last_output_dr_Merma.txt
 PyWhatKit_DB.txt
