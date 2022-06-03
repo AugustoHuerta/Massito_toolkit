@@ -1,5 +1,25 @@
 #!/usr/bin/env python
 # coding: utf-8
+""" Mr. Mapeador 2.0.py
+
+El próposito de este programa es:
+    1) Parsear los xlsx de movimientos de inventario del último mes a 1 DataFrame:
+        - Esto para calcular la VTM (Venta media) de cada producto en cada local Mass.
+
+    2) Subir los DataFrames resultantes a una google spreadsheet en particular:
+        - Para que la AppSheet Mr. Mapeador funcione.
+        - Y, ya que cada tienda tiene un coordinador asignado, subir los datos a la hoja correspondiente
+        a cada coordi.
+
+Notas:
+    - Método para obtener DFs de excels: Convertirlos a .csv primero y leerlos desde allí
+    - Saca los cálculos desde el último mes.
+        - Ver como optimizar este proceso para el siguiente consolidado.
+
+User histories (Scrum):
+    - 
+
+"""
 
 import json
 import gspread
@@ -25,11 +45,18 @@ def transform_df(df_given):
                                                 'Código Proveedor':lambda x: x.iloc[0],
                                                 'Nombre Proveedor':lambda x: x.iloc[0]
                                                 })
-    df_new['VMD'] = round(df_new['Cantidad'] / -30,2)
+    # Rounding 'Costo Unitario'
+    df_new['Costo Unitario'] = round(df_new['Costo Unitario'],2)
+
+    # Getting de VMD
+    df_new['VMD'] = round(df_new['Cantidad'] / -30,2) # -90 to get average of 3 months, -30 for one.
+    df_new = df_new.drop("Cantidad",axis=1)
+
+    # Creating and ordering de 'Unique id' column
     df_new['Unique id'] = df_new['Nombre de Prd.'] +" "+ df_new['Local'].astype(str)
     df_new['Unique id'] = df_new['Unique id'].str[:-2] # Al parecer formatean el número con .0 al final
     df_new.insert(0,'Unique id',df_new.pop('Unique id')) # Move "Unique id" col to first position
-    df_new = df_new.drop("Cantidad",axis=1)
+
     return df_new
 
 def df_v_all_locals(dfs_given):
@@ -103,27 +130,42 @@ def run():
     print("Obteniendo worksheet")
     worksheet = get_worksheet(spread_sheets)
 
-    dfs_mov = []
+    # Get paths of all excels wanted to parse
+    print("Obteniendo paths de los excels")
+
+    path_excel_files = []
     while True:
         print("Obteniendo archivo")
-        excel_file = get_excel_file()
+        path_excel_files.append(get_excel_file())
 
-        print("Leyendo Data frame original")
-        start2 = time.process_time()
+        wanna_more_excels =  input("¿Quieres añadir otro excel? N/Y: ")
 
-        # runs the csv_from_excel function:
-        path_csv = csv_from_excel(excel_file) # Toma 29 segundos
-
-        df_mov = pd.read_csv(path_csv) #Toma 1 seg
-        dfs_mov = dfs_mov + [df_mov]
-        #df_mov = pd.read_excel(excel_file) #Toma cerca de 31 seg
-        print("Logrado. Tiempo tomado:",time.process_time() - start2)
-        if input("¿Quieres añadir otro excel? N/Y: ") == 'N':
+        if wanna_more_excels.capitalize() == 'N':
             break
     
+
+    # Converting all of these excels to pandas DataFrames
+    print("Leyendo DataFrames original")
+
+    dfs_mov = []
+    if path_excel_files != []:
+        for excel_file in path_excel_files:
+            start2 = time.process_time()
+
+            print("Obteniendo DF de excel", excel_file)
+            path_csv = csv_from_excel(excel_file)
+            df_mov = pd.read_csv(path_csv) #Toma 1 seg
+
+            print("Anexando DF a los demás")
+            dfs_mov = dfs_mov + [df_mov]
+
+            print("Logrado. Tiempo tomado:",time.process_time() - start2)
+    
+    # Merge and parse all DataFrames to the final DataFrame.
     print("Transformando dataframe")
     final_df = df_v_all_locals(dfs_mov)
     
+    # Uploading to google sheets
     print("Cargandolo al google sheet")
     worksheet.clear()
     worksheet.update([final_df.columns.values.tolist()] + final_df.values.tolist())
