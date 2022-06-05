@@ -150,32 +150,37 @@ def run_dr_merma(list_of_products_alerted):
     number_products_alerted = reduce(lambda a,b: int(a)+int(b),[sheet.cell(2,2).value for sheet in sheets['Python variables sheets']])
     number_products_maped = reduce(lambda a,b: int(a)+int(b),[sheet.cell(3,2).value for sheet in sheets['Python variables sheets']]) #Sum each value of each spreadsheet
     for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
-        hour = int(time.strftime("%H"))
-        if int(time.strftime("%S")) >= 51:
-            minute = int(time.strftime("%M")) + 1
-        else:
-            minute = int(time.strftime("%M"))
-        #Enlistar todos los nombres de productos por vencerse
-        products_name = [list_of_products_alerted[i][1] for i in range(len(list_of_products_alerted)) if list_of_products_alerted[i][0] == tienda[4]]
-        if products_name != []: #Si hay productos por vencerse, envia esto:
-            products_name = "\n- ".join(products_name)
-            print(products_name, "Enviando a ", tienda[0])
-            ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma\nEstadisticas hasta hoy:\n- {number_products_alerted} vencimientos alertados conmigo\n-{number_products_maped} vencimientos mapeados con Mr. Mapeador')
-            ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
-            print(ms2)
-            if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
-                pywhatkit.sendwhatmsg('+51972795716',ms1, hour, minute+1,11)
-                pywhatkit.sendwhatmsg('+51972795716',ms2, hour, minute+2,11)
-                continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,11)
-            pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
-        else: #Si no hay productos por vencerse, envia esto:
-            ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
-            print(minute)
-            if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
-                pywhatkit.sendwhatmsg('+51972795716', ms3, hour, minute+1,11)
-                continue
-            pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,11)
+        try:
+            hour = int(time.strftime("%H"))
+            if int(time.strftime("%S")) >= 51:
+                minute = int(time.strftime("%M")) + 1
+            else:
+                minute = int(time.strftime("%M"))
+            #Enlistar todos los nombres de productos por vencerse
+            products_name = [list_of_products_alerted[i][1] for i in range(len(list_of_products_alerted)) if list_of_products_alerted[i][0] == tienda[4]]
+            if products_name != []: #Si hay productos por vencerse, envia esto:
+                products_name = "\n- ".join(products_name)
+                print(products_name, "Enviando a ", tienda[0])
+                ms1 = (f'Buenos dias {tienda[0]}, soy Dr. Merma\nEstadisticas hasta hoy:\n- {number_products_alerted} vencimientos alertados conmigo\n-{number_products_maped} vencimientos mapeados con Mr. Mapeador')
+                ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
+                print(ms2)
+                if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
+                    pywhatkit.sendwhatmsg('+51972795716',ms1, hour, minute+1,11)
+                    pywhatkit.sendwhatmsg('+51972795716',ms2, hour, minute+2,11)
+                    continue
+                pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,11)
+                pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
+            else: #Si no hay productos por vencerse, envia esto:
+                ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
+                print(minute)
+                print(hour)
+                if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
+                    pywhatkit.sendwhatmsg('+51972795716', ms3, hour, minute+1,11)
+                    continue
+                pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,11)
+        except Exception:
+            print(Exception, "Something bad happened during execution")
+            continue
 
 def run_dr_traslados(list_of_products_traslado):
     """
