@@ -149,13 +149,14 @@ def run_dr_merma(list_of_products_alerted):
     """
     number_products_alerted = reduce(lambda a,b: int(a)+int(b),[sheet.cell(2,2).value for sheet in sheets['Python variables sheets']])
     number_products_maped = reduce(lambda a,b: int(a)+int(b),[sheet.cell(3,2).value for sheet in sheets['Python variables sheets']]) #Sum each value of each spreadsheet
+    mensajes_enviados_correctamente = True
     for tienda in tiendas_database: # For loop para enviar los mensajes a cada tienda
         try:
-            hour = int(time.strftime("%H"))
+            hour: int = int(time.strftime("%H"))
             if int(time.strftime("%S")) >= 51:
-                minute = int(time.strftime("%M")) + 1
+                minute: int = int(time.strftime("%M")) + 1
             else:
-                minute = int(time.strftime("%M"))
+                minute: int = int(time.strftime("%M"))
             #Enlistar todos los nombres de productos por vencerse
             products_name = [list_of_products_alerted[i][1] for i in range(len(list_of_products_alerted)) if list_of_products_alerted[i][0] == tienda[4]]
             if products_name != []: #Si hay productos por vencerse, envia esto:
@@ -165,22 +166,24 @@ def run_dr_merma(list_of_products_alerted):
                 ms2 = """Dr. Merma \U0001f468\u200D\u2695 recomienda revisar: \n""" +"- "+ products_name + '\nPara hoy ' + str((datetime.date.today()))
                 print(ms2)
                 if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
-                    pywhatkit.sendwhatmsg('+51972795716',ms1, hour, minute+1,11)
-                    pywhatkit.sendwhatmsg('+51972795716',ms2, hour, minute+2,11)
+                    pywhatkit.sendwhatmsg('+51972795716',ms1, hour, minute+1,16)
+                    pywhatkit.sendwhatmsg('+51972795716',ms2, hour, minute+2,16)
                     continue
-                pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,11)
-                pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,11)
+                pywhatkit.sendwhatmsg_to_group(tienda[1],ms1, hour, minute+1,16)
+                pywhatkit.sendwhatmsg_to_group(tienda[1],ms2, hour, minute+2,16)
             else: #Si no hay productos por vencerse, envia esto:
                 ms3 = f'Felicidades. Ningún vencimiento para {tienda[0]} el día {(datetime.date.today())}\n Que la pasen bien!'
                 print(minute)
                 print(hour)
                 if tienda[4] == '569': #La tienda 569 es un caso especial. Quieren recibir los anuncios en el RPC
-                    pywhatkit.sendwhatmsg('+51972795716', ms3, hour, minute+1,11)
+                    pywhatkit.sendwhatmsg('+51972795716', ms3, hour, minute+1,16)
                     continue
-                pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,11)
+                pywhatkit.sendwhatmsg_to_group(tienda[1], ms3, hour, minute+1,16)
         except Exception:
             print(Exception, "Something bad happened during execution")
+            mensajes_enviados_correctamente = False
             continue
+    return mensajes_enviados_correctamente
 
 def run_dr_traslados(list_of_products_traslado):
     """
@@ -223,13 +226,15 @@ def avisadora():
     """
     def mensaje(name):
         mensaje = f"""Hola {name}. Soy señorita anunciadora. Avances del frente:
-        ¿Nunca tuviste un quiebre de arena de gato? Sí, es así, entonces sabes de lo que hablo.
-        Imagina todas las arenas de gato que pudiste vender si hubieras tenido el stock.
-        Por el momento las tiendas 569, 831 y 762 tienen su cubicaje de quiebres hecho. Este es: https://docs.google.com/spreadsheets/d/1J7ou_Z0qi2ZtiWZbRKLNUDavPA1FCUy9Hcl2sRjR-ZQ/edit#gid=204216952
-        Ahora esta semana se está trabajando en solucionar el problema de los vencimientos.
-        Imagina un mundo con 0 merma de vencimientos. ¿Utópico? ¿Posible? Lo descubriremos.
-        Recordar que todo este trabajo se logra gracias a tu apoyo. Cualquier puedes comunicarla a Augusto. Que tengas un buen día. ;D
-        Señorita anunciadora fuera.
+        - La primera versión de agente doble 0 está disponible! Esto gracias al apoyo de Diego de Luzuriaga.
+        Este sistema realiza una análisis estadístico de cuánto se está perdiendo al mes por quiebres y cómo solucionarlo.
+        - La anterior semana ayudamos a más de 3 tiendas con sus vencimientos!!! Lo cual se traduce a más tranquilidad y menos trabajo
+        a más multis y admins de la zona.
+        - Durante esta semana Augusto produndizará en: visualización de datos, cómo hacer un cubicaje efectivo de merma de vencimientos y reportes efectivos para coordinadores.
+        (Si quisieras ser uno de los primeros en tenerlo o apoyar al proyecto con observaciones: contacalo ;D. El apoyo siempre es bienvenido)
+        Recuerda que este proyecto es gratuito y dado gracias a tu apoyo. Si tuvieras alguna observación, mejora o x cosa que crees que se relaciona con mi trabajo:
+        No dudes en hacermelo saber. ;D
+        Gracias por tu tiempo y buena venta esta semana.
         """
         return mensaje
 
@@ -244,8 +249,8 @@ def avisadora():
         mensajito = mensaje(name)
         pywhatkit.sendwhatmsg(tienda[2], mensajito, hour, minute+1)
     # Enviarlo al coordinador Luis
-    mensajito = mensaje('Luis')
-    pywhatkit.sendwhatmsg('+51989248667', mensajito, hour, minute+6)
+    #mensajito = mensaje('Luis')
+    #pywhatkit.sendwhatmsg('+51989248667', mensajito, hour, minute+6)
 
 def run():
     # Alertar sobre los productos proximos a vencer
@@ -253,10 +258,11 @@ def run():
     list_exp_products = enlist_products_to_alert()
     if list_exp_products != []:
         print("Productos por vencerse encontrados, avisandolos")
-        run_dr_merma(list_exp_products)
+        mensajes_enviados_status = run_dr_merma(list_exp_products)
         print("Mensajes enviados")
-    change_alerted_status_of_product(list_exp_products)
-    print("Productos status cambiados")
+        if mensajes_enviados_status == True:
+            change_alerted_status_of_product(list_exp_products)
+            print("Productos status cambiados")
 
     # Alertar sobre los productos proximos a vencer
     print("Revisando si hay productos que se deberían trasladar")

@@ -121,7 +121,7 @@ def run():
             print("Anexando DF a los demás")
             dfs_mov = dfs_mov + [df_mov]
 
-            print("Logrado. Tiempo tomado:",time.process_time() - start2)
+            print("Logrado. Tiempo tomado:",round(time.process_time() - start2, 2))
 
 
     # Merge and parse all DataFrames to the final DataFrame.

@@ -6,6 +6,17 @@ import xlrd
 import converter
 import Uploader
 
+"""
+Programa que predice:
+
+- Que productos van a tener un quiebre (Más adelante merma)
+- Por cuántas unidades va a ver un quiebre.
+- Cuánto dinero se pierde en el proceso.
+
+En base a los movimientos de inventario del último trimestre de cada tienda.
+Toma como input un xlsx y actualiza un google spreadsheet: shorturl.at/pvGTY
+"""
+
 def get_values_weeks(product, local, pivot_tabler):
     """
     Expects code of product (int) and which local (int) we are talking about.
@@ -18,12 +29,12 @@ def get_values_weeks(product, local, pivot_tabler):
 
 def new_cubicaje(sales_per_week):
     """
-    sales_per_week is a unsorted numpy array.
+    sales_per_week is an unsorted numpy array.
     """
     sales_per_week.sort()
     q1, q3 = np.percentile(sales_per_week,75) , np.percentile(sales_per_week,25)
     iqr = (q1 - q3)
-    lower_bound, upper_bound  = (q1-(1.5*iqr)), (q3+(2.0*iqr)) #2.5 porque puede pasa que hay picos
+    lower_bound, upper_bound  = (q1-(1.5*iqr)), (q3+(2.0*iqr)) #2.5 porque puede pasar que hay picos
     no_outliers = []
     outliers_quiebre = False
     for x in sales_per_week:
@@ -87,17 +98,17 @@ def all_cubicajes(df):
     return np.concatenate([list_arrays])
 
 def run():
-    print("Obtieniendo data")
+    print("Obtieniendo ventas del último trimestre")
     start1 = time.process_time()
     f_df = converter.run()
     print("Logrado. Tiempo tomado:",time.process_time() - start1)
 
-    print("Obteniendo quiebres")
+    print("Prediciendo quiebres para el siguiente mes")
     start = time.process_time()
     data_quiebres = all_cubicajes(f_df)
     print("Logrado. Tiempo tomado:",time.process_time() - start)
     
-    print("Pasando quiebres y all_data a df y .csv")
+    print("Creando el DataFrame en base a los quiebres")
     start = time.process_time()
     headers = ['Producto SKU', 'Nombre producto', 'Local', 'Sugerido cubicaje',
                'VTM (Mes)', 'VTM (Diario)', "Cuanto se pierde (UN)", "Cuanto se pierde (soles)",
@@ -105,15 +116,17 @@ def run():
     cubiculos = pd.DataFrame(data_quiebres,columns=headers)
     cubiculos['Producto SKU'] = cubiculos['Producto SKU'].astype(int)
 
+    print("Exportandolo a .csv")
     cubiculos.to_csv("cubiculos.csv", index=False)
     f_df.to_csv("df_movimientos_inv_all_data.csv", index=False)
     print("Logrado. Tiempo tomado:",time.process_time() - start)
 
+    print("Subiendolo a google spreadsheets.")
     Uploader.run()
 
     #if (input("¿Te gustaría subirlo al google sheet? Y/N").capitalize() == 'Y') or (True):
     #    Uploader.run()
-    print("TODO el programa realizado en: ", time.process_time() - start1)
+    print("Listo! ;). Quiebres predichos en: ", time.process_time() - start1)
 
 
 if __name__ == '__main__':
