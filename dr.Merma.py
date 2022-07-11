@@ -225,15 +225,9 @@ def avisadora():
     Función para avisar a los admins de los avances semanales del proyecto. Se ejecuta todos los lunes.
     """
     def mensaje(name):
-        mensaje = f"""Hola {name}. Soy señorita anunciadora. Avances del frente:
-        - La primera versión de agente doble 0 está disponible! Esto gracias al apoyo de Diego de Luzuriaga.
-        Este sistema realiza una análisis estadístico de cuánto se está perdiendo al mes por quiebres y cómo solucionarlo.
-        - La anterior semana ayudamos a más de 3 tiendas con sus vencimientos!!! Lo cual se traduce a más tranquilidad y menos trabajo
-        a más multis y admins de la zona.
-        - Durante esta semana Augusto produndizará en: visualización de datos, cómo hacer un cubicaje efectivo de merma de vencimientos y reportes efectivos para coordinadores.
-        (Si quisieras ser uno de los primeros en tenerlo o apoyar al proyecto con observaciones: contacalo ;D. El apoyo siempre es bienvenido)
-        Recuerda que este proyecto es gratuito y dado gracias a tu apoyo. Si tuvieras alguna observación, mejora o x cosa que crees que se relaciona con mi trabajo:
-        No dudes en hacermelo saber. ;D
+        mensaje = f"""Hola {name}. Soy señorita anunciadora. Augusto deja en pausa todos las actualizaciones y avances de cada proyecto.
+        Ahora sus esfuerzos se enfocan en crear una presentación para ejecutivos en la sede central con el coordinador Luis.
+        El objetivo es vender los proyectos y sus avances o obtener un puesto como analista de datos.
         Gracias por tu tiempo y buena venta esta semana.
         """
         return mensaje
